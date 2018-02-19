@@ -1,4 +1,4 @@
-# cmd-restarter
+# cmd_restarter
 
 Utility for automatic restarts of CMD (LAMMPS) calculations on a HPC cluster using a queue system (Torque/PBS)
 

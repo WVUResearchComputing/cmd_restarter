@@ -11,6 +11,7 @@ Features:
   
 Limitations:
 
+  * This code is indented to work only with Python 3
   * CMD codes supported: LAMMPS
   * Queue systems supported: Torque/PBS
   

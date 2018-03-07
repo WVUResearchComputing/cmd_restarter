@@ -17,7 +17,8 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dump', metavar='<PATH>', type=str, required=True,
                         help='Path to dump file used to count the number of steps completed')
     parser.add_argument('-m', '--max', metavar='<PATH>', type=int, required=True,
-                        help='Maximum number of iterations, when the dump file reach that number, no more jobs will be submitted')
+                        help='Maximum number of iterations, when the dump file reach that number, no more jobs will '
+                             'be submitted')
 
     args = parser.parse_args()
     print(args)
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     print('Job Name: %s' % jobname)
     print()
 
-    log=logging.getLogger()
+    log = logging.getLogger()
     log.setLevel(logging.DEBUG)
 
     new_submit = True
@@ -83,7 +84,7 @@ if __name__ == '__main__':
                     print('Creating a backup copy at: %s' % bkpfile)
                     shutil.copy2(args.input, bkpfile)
                     break
-                index+=1
+                index += 1
 
             cmd.set_input(args.input, data, rstblock, to_uncomment)
 

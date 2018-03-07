@@ -1,5 +1,4 @@
 import os
-import logging
 import subprocess
 import xml.etree.ElementTree as ElementTree
 
@@ -21,16 +20,17 @@ def get_jobs(user):
             ret[jobid][child.tag] = child.text
     return ret
 
+
 def get_jobname(path):
 
-    rf=open(path)
-    data =rf.readlines()
+    rf = open(path)
+    data = rf.readlines()
     rf.close()
 
-    jobname=path
+    jobname = path
     for iline in data:
         if '#PBS' in iline and '-N' in iline:
-            jobname= iline.split('-N')[1].strip()
+            jobname = iline.split('-N')[1].strip()
 
     return jobname
 

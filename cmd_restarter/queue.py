@@ -1,3 +1,5 @@
+import os
+import logging
 import subprocess
 import xml.etree.ElementTree as ElementTree
 
@@ -19,6 +21,22 @@ def get_jobs(user):
             ret[jobid][child.tag] = child.text
     return ret
 
+def get_jobname(path):
 
-def submit():
-    pass
+    rf=open(path)
+    data =rf.readlines()
+    rf.close()
+
+    jobname=path
+    for iline in data:
+        if '#PBS' in iline and '-N' in iline:
+            jobname= iline.split('-N')[1].strip()
+
+    return jobname
+
+
+def submit(path):
+    if not os.path.exists(path):
+        raise ValueError("File does not exists: %s" % path)
+    jobid = subprocess.check_output("qsub %s" % path, shell=True)
+    return jobid.decode('utf8').strip()

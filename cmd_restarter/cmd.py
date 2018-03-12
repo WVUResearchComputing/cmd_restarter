@@ -93,7 +93,7 @@ def analysis_block(rstblock, variables):
                     files.append((mtime, iline, newarg))
                     index += 1
                 else:
-                    logging.warning('File not found: %s' % newarg)
+                    logging.debug('File not found: %s' % newarg)
                     if index == 0:
                         files.append((0.0, iline, newarg))
                     break
@@ -149,6 +149,8 @@ def get_input(path):
     data = rf.readlines()
     rf.close()
 
+    check_input(data)
+
     rstblock = collect_rstblock(data)
     variables = collect_variables(data) 
 
@@ -179,24 +181,37 @@ def get_output(path):
             nvalues = len(values)
         else:
             if nvalues != len(values):
-                print("WARNING: Line seems truncated, ignoring data from now on...")
-                break
+                logging.debug("WARNING: Line seems truncated, ignoring data from now on...")
+                continue
+
 
         cur_value = values[0].strip()
-        cur_iteration = int(cur_value)
-        print(cur_iteration)
+        try:
+            ci = int(cur_value)
+        except ValueError:
+            continue
+        cur_iteration = ci
 
     rf.close()
     return cur_iteration
 
 
 def set_input(filename, data, rstblock, to_uncomment):
+    """
+    Write a new Input File (filename) using the lines from 'data' and the information
+    about the blocks to be commented or uncommented based on 'rstblock' and 'to_uncomment'
+    """
     wf = open(filename, 'w')
     
     rst_active = False
+    initonly_active = False
+    restonly_active = False
+
     for iline in data:
-        if 'RST_BEGIN' in iline:
-            wf.write("# RST_BEGIN\n")
+        line = iline.strip()
+
+        if '#' in line and 'RST_BEGIN' in line:
+            wf.write(line+'\n')
             rst_active = True
             for i in range(len(rstblock)):
                 if i == to_uncomment:
@@ -204,13 +219,98 @@ def set_input(filename, data, rstblock, to_uncomment):
                 else:
                     wf.write('# ' + rstblock[i] + '\n')
 
-        elif 'RST_END' in iline:
-            wf.write("# RST_END\n")
+        elif '#' in line and 'RST_END' in line:
+            wf.write(line+'\n')
             rst_active = False
         elif rst_active:
             pass
+        elif '#' in line and 'RESTONLY_BEGIN' in line:
+            wf.write(line+'\n')
+            restonly_active = True
+        elif '#' in line and 'RESTONLY_END' in line:
+            wf.write(line+'\n')
+            restonly_active = False
+        elif '#' in line and 'INITONLY_BEGIN' in line:
+            wf.write(line+'\n')
+            initonly_active = True
+        elif '#' in line and 'INITONLY_END' in line:
+            wf.write(line+'\n')
+            initonly_active = False
         else:
-            wf.write(iline)
+            if restonly_active and rstblock[to_uncomment].startswith('read_restart'):
+                # If line is commented, uncomment it
+                if line.startswith('#'):
+                    line = line[1:].strip()
+                    wf.write(line+'\n')
+                # Write the line as it is
+                else:
+                    wf.write(line+'\n')
+
+            elif initonly_active and rstblock[to_uncomment].startswith('read_data'):
+                # If line is commented, uncomment it
+                if line.startswith('#'):
+                    line = line[1:].strip()
+                    wf.write(line+'\n')
+                # Write the line as it is
+                else:
+                    wf.write(line+'\n')
+
+
+            elif restonly_active and rstblock[to_uncomment].startswith('read_data'):
+                # If line is commented, keep it
+                if line.startswith('#'):
+                    wf.write(line+'\n')
+                # Write the line commented
+                else:
+                    wf.write('# '+line+'\n')
+
+            elif initonly_active and rstblock[to_uncomment].startswith('read_restart'):
+                # If line is commented, keep it
+                if line.startswith('#'):
+                    wf.write(line+'\n')
+                # Write the line commented
+                else:
+                    wf.write('# '+line+'\n')
+
+            else:
+                wf.write(line+'\n')
+
+
+
+
     wf.close()
 
+
+
+def check_input(data):
+    """
+    Check the lines in the data input to check that the blocks are properly defined on the input file
+    Checks for missing BEGIN or END lines and check also for nested blocks that must never happen 
+    on the input
+    """
+    rst=False
+    restonly=False
+    initonly=False
+
+    for iline in data:
+        line = iline.strip()
+
+        if '#' in line and 'RST_BEGIN' in line:
+            assert([rst,restonly,initonly]==[False, False, False])
+            rst=True
+        elif '#' in line and 'RST_END' in line:
+            assert([rst,restonly,initonly]==[True, False, False])
+            rst=False
+        elif '#' in line and 'RESTONLY_BEGIN' in line:
+            assert([rst,restonly,initonly]==[False, False, False])
+            restonly=True
+        elif '#' in line and 'RESTONLY_END' in line:
+            assert([rst,restonly,initonly]==[False, True, False])
+            restonly=False
+        elif '#' in line and 'INITONLY_BEGIN' in line:
+            assert([rst,restonly,initonly]==[False, False, False])
+            initonly=True
+        elif '#' in line and 'INITONLY_END' in line:
+            assert([rst,restonly,initonly]==[False, False, True])
+            initonly=False
 

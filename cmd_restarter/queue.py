@@ -20,22 +20,11 @@ def get_jobs(user):
             ret[jobid][child.tag] = child.text
     return ret
 
-
-def get_jobname(path):
-
-    rf = open(path)
-    data = rf.readlines()
-    rf.close()
-
-    jobname = path
-    for iline in data:
-        if '#PBS' in iline and '-N' in iline:
-            jobname = iline.split('-N')[1].strip()
-
-    return jobname
-
-
 def submit(path):
+    """
+    Submit a job with the given script
+    Returns the associated jobid as a string
+    """
     if not os.path.exists(path):
         raise ValueError("File does not exists: %s" % path)
     jobid = subprocess.check_output("qsub %s" % path, shell=True)

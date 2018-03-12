@@ -8,6 +8,7 @@ import time
 import shutil
 from cmd_restarter import cmd, queue
 
+
 def create_backup(filename):
     index = 1 
     while True:
@@ -47,7 +48,6 @@ if __name__ == '__main__':
     print('Sleep Time    : %d' % args.sleep)
     print('')
 
-    
     if not os.path.isfile(args.input):
         print("Input File not found: %s" % args.input)
 
@@ -66,24 +66,25 @@ if __name__ == '__main__':
         jobs = queue.get_jobs(username)        
         jobids = list(jobs.keys())
         jobidnumber = jobid.split('.')[0]
+        jobname = None
 
         if jobid in jobids:
-            jobstate=jobs[jobid]['job_state']
+            jobstate = jobs[jobid]['job_state']
             jobname = jobs[jobid]['Job_Name']
 
             if 'qtime' in jobs[jobid]:
-                jobqtime=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(jobs[jobid]['qtime'])))
+                jobqtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(jobs[jobid]['qtime'])))
             else:
-                jobqtime=''
-            if jobstate=='R':
-                rtime=int(time.time())-int(jobs[jobid]['start_time'])
-                runtime=str(datetime.timedelta(seconds=rtime))
-                print('JobName: %s JobID: %s JobState: [%s] JobQtime: %s Runtime: %s' % (jobname, jobid, jobstate, jobqtime, runtime))
+                jobqtime = ''
+            if jobstate == 'R':
+                rtime = int(time.time())-int(jobs[jobid]['start_time'])
+                runtime = str(datetime.timedelta(seconds=rtime))
+                print('JobName: %s JobID: %s JobState: [%s] JobQtime: %s Runtime: %s' % (jobname, jobid, jobstate,
+                                                                                         jobqtime, runtime))
             else:
                 print('JobName: %s JobID: %s JobState: [%s] JobQtime: %s' % (jobname, jobid, jobstate, jobqtime))
 
-
-        if jobid not in jobids or (jobname is not None and  os.path.isfile(jobname+'.o'+jobidnumber)):
+        if jobid not in jobids or (jobname is not None and os.path.isfile(jobname+'.o'+jobidnumber)):
             if not os.path.isfile(args.dump):
                 cur_iteration = 0
             else:

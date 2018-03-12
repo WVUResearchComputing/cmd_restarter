@@ -184,7 +184,6 @@ def get_output(path):
                 logging.debug("WARNING: Line seems truncated, ignoring data from now on...")
                 continue
 
-
         cur_value = values[0].strip()
         try:
             ci = int(cur_value)
@@ -255,7 +254,6 @@ def set_input(filename, data, rstblock, to_uncomment):
                 else:
                     wf.write(line+'\n')
 
-
             elif restonly_active and rstblock[to_uncomment].startswith('read_data'):
                 # If line is commented, keep it
                 if line.startswith('#'):
@@ -275,11 +273,7 @@ def set_input(filename, data, rstblock, to_uncomment):
             else:
                 wf.write(line+'\n')
 
-
-
-
     wf.close()
-
 
 
 def check_input(data):
@@ -288,29 +282,29 @@ def check_input(data):
     Checks for missing BEGIN or END lines and check also for nested blocks that must never happen 
     on the input
     """
-    rst=False
-    restonly=False
-    initonly=False
+    rst = False
+    restonly = False
+    initonly = False
 
     for iline in data:
         line = iline.strip()
 
         if '#' in line and 'RST_BEGIN' in line:
-            assert([rst,restonly,initonly]==[False, False, False])
-            rst=True
+            assert([rst, restonly, initonly] == [False, False, False])
+            rst = True
         elif '#' in line and 'RST_END' in line:
-            assert([rst,restonly,initonly]==[True, False, False])
-            rst=False
+            assert([rst, restonly, initonly] == [True, False, False])
+            rst = False
         elif '#' in line and 'RESTONLY_BEGIN' in line:
-            assert([rst,restonly,initonly]==[False, False, False])
-            restonly=True
+            assert([rst, restonly, initonly] == [False, False, False])
+            restonly = True
         elif '#' in line and 'RESTONLY_END' in line:
-            assert([rst,restonly,initonly]==[False, True, False])
-            restonly=False
+            assert([rst, restonly, initonly] == [False, True, False])
+            restonly = False
         elif '#' in line and 'INITONLY_BEGIN' in line:
-            assert([rst,restonly,initonly]==[False, False, False])
-            initonly=True
+            assert([rst, restonly, initonly] == [False, False, False])
+            initonly = True
         elif '#' in line and 'INITONLY_END' in line:
-            assert([rst,restonly,initonly]==[False, False, True])
-            initonly=False
+            assert([rst, restonly, initonly] == [False, False, True])
+            initonly = False
 

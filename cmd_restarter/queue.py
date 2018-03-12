@@ -20,6 +20,7 @@ def get_jobs(user):
             ret[jobid][child.tag] = child.text
     return ret
 
+
 def submit(path):
     """
     Submit a job with the given script

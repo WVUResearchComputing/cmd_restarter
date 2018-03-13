@@ -19,16 +19,17 @@ CLASSIFIERS = [
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Scientific/Engineering :: Chemistry",
 ]
-INSTALL_REQUIRES = ['numpy >= 1.12.0', 'scipy >= 0.18.0']
+INSTALL_REQUIRES = ['numpy >= 1.12.0']
 
 ###################################################################
 
 setup(
     name=NAME,
-    version='0.18.2.19',
+    version='0.18.3.13',
     author='Guillermo Avendano-Franco',
     author_email='gufranco@mail.wvu.edu',
     packages=find_packages(),
+    include_package_data=True,
     url='https://github.com/WVUResearchComputing/cmd_restarter',
     scripts=['scripts/cmd_restart.py'],
     license='LICENSE',

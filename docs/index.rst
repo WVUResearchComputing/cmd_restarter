@@ -13,6 +13,7 @@ Welcome to cmd_restarter's documentation!
    introduction
    installation
    quickstart
+   tutorial
 
 
 Indices and tables

@@ -1,0 +1,141 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Installation &#8212; cmd_restarter 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start" href="quickstart.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>In order to use cmd_restarter in its current state you need:</p>
+<ul class="simple">
+<li>Python 3.4 or higher (Tested on python 3.6)</li>
+<li>LAMMPS (cmd_restarter do not execute LAMMPS directly, but your submission script will)</li>
+<li>A compatible Resource Manager such as Torque/PBS (Tested on Torque/Moab)</li>
+</ul>
+<div class="section" id="using-virtualenv">
+<h2>Using virtualenv<a class="headerlink" href="#using-virtualenv" title="Permalink to this headline">¶</a></h2>
+<p>The safest way of installing cmd_restarter is using virtualenv. Virtualenv will create on a folder an isolated python environment, nothing outside that folder will change and if you want you can simply delete the folder and nothing will be left behind.</p>
+<p>Creating a virtual environment is easy. Suppose that you want to create a virtual enviroment on a folder called “ve36”, execute command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="n">ve36</span>
+</pre></div>
+</div>
+<p>To activate the environment execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">ve36</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>After activation, you can install cmd_restarter with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">cmd_restarter</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-pip-from-your-local-python-installation">
+<h2>Using pip from your local python installation<a class="headerlink" href="#using-pip-from-your-local-python-installation" title="Permalink to this headline">¶</a></h2>
+<p>If you want to install directly on your $HOME folder execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">cmd_restarter</span> <span class="o">--</span><span class="n">user</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-the-latest-sources-on-github">
+<h2>Using the latest sources on Github<a class="headerlink" href="#using-the-latest-sources-on-github" title="Permalink to this headline">¶</a></h2>
+<p>Use the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">WVUResearchComputing</span><span class="o">/</span><span class="n">cmd_restarter</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Once the sources are downloaded, all that you have to do is setup the variable PYTHONPATH pointing to the place where you download the sources. cmd_restarter is a purely python code, so nothing need to be compiled:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PYTHONPATH</span><span class="o">=&lt;</span><span class="n">PATH_TO</span><span class="o">&gt;/</span><span class="n">cmd_restarter</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#using-virtualenv">Using virtualenv</a></li>
+<li><a class="reference internal" href="#using-pip-from-your-local-python-installation">Using pip from your local python installation</a></li>
+<li><a class="reference internal" href="#using-the-latest-sources-on-github">Using the latest sources on Github</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction</a></li>
+      <li>Next: <a href="quickstart.html" title="next chapter">Quick Start</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Guillermo Avendano-Franco.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/installation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

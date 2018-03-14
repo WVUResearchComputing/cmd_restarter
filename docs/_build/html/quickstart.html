@@ -1,0 +1,219 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Quick Start &#8212; cmd_restarter 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>To use cmd_restarter you need:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The input file for LAMMPS and any other file used by LAMMPS to perform the simulation, geometries for example</li>
+<li>The submission script that you will use on the cluster where you will run the jobs.</li>
+</ul>
+</div></blockquote>
+<p>On your input file you need to add some comments that will instruct cmd_restarter about which portions of the Input will change in case you are running from scratch or restarting a previous calculation.</p>
+<p>The input file needs to be modified to include one block like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># RST_BEGIN</span>
+<span class="c1"># read_data ...</span>
+<span class="c1"># read_restart ...</span>
+<span class="c1"># read_restart ...</span>
+<span class="c1"># RST_END</span>
+</pre></div>
+</div>
+<p>The lines inside the block will be commented or uncommented based on the existance or not of the restart files amd the restart file that will be activated is the newest file from the list of restart files.</p>
+<p>There are a couple of more blocks to specify which parts of the input are activated only for the firts run or for restart runs The blocks are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># INITONLY_BEGIN</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="c1"># INITONLY_END</span>
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># RESTONLY_BEGIN</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="c1"># RESTONLY_END</span>
+</pre></div>
+</div>
+<p>cmd_restarter will comment or uncomment those blocks entirely so not real comments should be inside those blocks as cmd_restarter could uncomment them leaving a unproper LAMMPS input script.</p>
+<p>Once those changes are done, cmd_restarter can be executed as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmd_restart</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">p</span> <span class="o">&lt;</span><span class="n">SUBMISSION_SCRIPT</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;</span><span class="n">LAMMPS_INPUT</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">d</span> <span class="o">&lt;</span><span class="n">DUMP_FILENAME</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">m</span> <span class="o">&lt;</span><span class="n">MAX_ITERATIONS</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">s</span> <span class="o">&lt;</span><span class="n">SLEEPING_TIME</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>Using cmd_restarter is really simple. You just need to add a few comments on your LAMMPS script file, prepare a basic submission script and the script will take the responsability of submit and resubmit jobs until the number of iterations is achieved.</p>
+<p>We will present now a simple example using 147 particles interacting under a Lennard-Jones potential.</p>
+<div class="section" id="lennard-jones-with-147-particles">
+<h2>Lennard-Jones with 147 particles<a class="headerlink" href="#lennard-jones-with-147-particles" title="Permalink to this headline">¶</a></h2>
+<p>For this exercise we will use cmd_restarter  to compute a simulation of 147 particles under a Lennard-Jones force field.
+This number of particles is still too low for modern computers, we have constrained the conditions to force multiple executions as it will be case with much bigger problems.</p>
+<p>Conside the following LAMMPS input file (in.run):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 147 LJ particles</span>
+
+<span class="n">units</span>           <span class="n">lj</span>
+<span class="n">dimension</span>       <span class="mi">3</span>
+<span class="n">boundary</span>        <span class="n">s</span> <span class="n">s</span> <span class="n">s</span>
+<span class="n">atom_style</span>      <span class="n">atomic</span>
+
+<span class="n">region</span> <span class="n">sbound</span> <span class="n">sphere</span> <span class="mf">0.00</span> <span class="mf">0.00</span> <span class="mf">0.00</span> <span class="mf">25.000</span> <span class="n">units</span> <span class="n">box</span> <span class="n">side</span> <span class="ow">in</span>
+
+<span class="c1"># RST_BEGIN</span>
+<span class="n">read_data</span> <span class="n">LJ147</span><span class="o">.</span><span class="n">geo</span>
+<span class="c1"># read_restart run_a.rest</span>
+<span class="c1"># read_restart run_b.rest</span>
+<span class="c1"># RST_END</span>
+
+<span class="n">include</span>         <span class="n">LJ147</span><span class="o">.</span><span class="n">parm</span>
+<span class="n">timestep</span>        <span class="mf">0.005</span>
+<span class="n">run_style</span>       <span class="n">verlet</span>
+<span class="n">velocity</span>        <span class="nb">all</span> <span class="n">create</span> <span class="mf">0.007</span> <span class="mi">1298371</span> <span class="n">mom</span> <span class="n">yes</span> <span class="n">rot</span> <span class="n">yes</span> <span class="n">dist</span> <span class="n">gaussian</span>
+
+<span class="n">fix</span>             <span class="mi">1</span> <span class="nb">all</span> <span class="n">nvt</span> <span class="n">temp</span> <span class="mf">0.007</span> <span class="mf">0.007</span> <span class="mf">100.0</span>
+
+<span class="n">dump</span>            <span class="mi">2</span> <span class="nb">all</span> <span class="n">dcd</span> <span class="mi">100</span> <span class="n">rlx_0</span><span class="o">.</span><span class="mi">5</span><span class="n">_LJ147</span><span class="o">.</span><span class="n">dcd</span>
+<span class="n">dump_modify</span>  <span class="mi">2</span> <span class="n">unwrap</span> <span class="n">yes</span>
+
+<span class="n">thermo_style</span>    <span class="n">multi</span>
+<span class="n">thermo</span>          <span class="mi">1000</span>
+<span class="n">variable</span> <span class="n">sys_step</span> <span class="n">equal</span> <span class="n">step</span>
+
+<span class="n">fix</span> <span class="mi">5</span> <span class="nb">all</span> <span class="n">wall</span><span class="o">/</span><span class="n">region</span> <span class="n">sbound</span> <span class="n">harmonic</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">25</span>
+<span class="n">compute</span> <span class="mi">1</span> <span class="nb">all</span> <span class="n">gyration</span>
+
+<span class="n">fix</span> <span class="n">Rgave</span> <span class="nb">all</span> <span class="n">ave</span><span class="o">/</span><span class="n">time</span> <span class="mi">100</span> <span class="mi">5</span> <span class="mi">1000</span> <span class="n">c_1</span> <span class="n">file</span> <span class="n">Rg_rlx0</span><span class="o">.</span><span class="mi">5</span><span class="n">_LJ147</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">fix</span> <span class="n">extra</span> <span class="nb">all</span> <span class="nb">print</span> <span class="mi">1000</span> <span class="s2">&quot;$</span><span class="si">{sys_step}</span><span class="s2">&quot;</span> <span class="n">screen</span> <span class="n">no</span> <span class="n">append</span> <span class="n">steps</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">dump</span> <span class="n">geometry</span> <span class="nb">all</span> <span class="n">atom</span> <span class="mi">1000</span> <span class="n">dump</span><span class="o">.</span><span class="n">atom</span>
+<span class="n">dump</span> <span class="n">d0</span> <span class="nb">all</span> <span class="n">image</span> <span class="mi">1000</span> <span class="n">dump</span><span class="o">.*.</span><span class="n">jpg</span> <span class="nb">type</span> <span class="nb">type</span>
+<span class="n">dump_modify</span> <span class="n">d0</span> <span class="n">pad</span> <span class="mi">8</span>
+
+<span class="n">restart</span>         <span class="mi">1000</span>   <span class="n">run_a</span><span class="o">.</span><span class="n">rest</span> <span class="n">run_b</span><span class="o">.</span><span class="n">rest</span>
+<span class="n">run</span>             <span class="mi">10000000</span>
+
+<span class="n">write_restart</span>         <span class="n">rlx_0</span><span class="o">.</span><span class="mi">5</span><span class="n">_LJ147</span><span class="o">.</span><span class="n">rest</span>
+</pre></div>
+</div>
+<p>This is a normal LAMMPS script file, the only special element is a block of commands enclosed in some comments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># RST_BEGIN</span>
+<span class="n">read_data</span> <span class="n">LJ147</span><span class="o">.</span><span class="n">geo</span>
+<span class="c1"># read_restart run_a.rest</span>
+<span class="c1"># read_restart run_b.rest</span>
+<span class="c1"># RST_END</span>
+</pre></div>
+</div>
+<p>The actual state of the lines inside the block is irrelevant. You can perfectly keep all the lines <code class="docutils literal notranslate"><span class="pre">read_...</span></code> commented or uncommented. cmd_restarter will modify this input according to the presence or not of those restart files. If you start from scratch the files <code class="docutils literal notranslate"><span class="pre">run_a.rest</span></code> and <code class="docutils literal notranslate"><span class="pre">run_b.rest</span></code> do not exit, so the line with <code class="docutils literal notranslate"><span class="pre">read_data</span></code> is activated and the other lines are commented. After the first execution some or both of those restart files will be present, cmd_restarter will determine which one is newer and use it to prepare the input for restart and submit a new job to continue the simulation.</p>
+<p>There is nothing special about the submission script, the LAMMPS input script <code class="docutils literal notranslate"><span class="pre">in.run</span></code> is always changed in-place, but keeping a backup copy on files eding on <cite>…BKPXXX</cite>. A very simple submission script will look like this (runjob.pbs):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+
+#PBS -l nodes=1:ppn=2,walltime=00:5:00
+#PBS -m aeb
+#PBS -q debug
+#PBS -j oe
+
+module purge
+module load atomistic/lammps/2017.08.11
+
+cd $PBS_O_WORKDIR
+mpirun -np 2 -machinefile $PBS_NODEFILE lmp_mpi -in in.run
+</pre></div>
+</div>
+<p>On this submission script we are just requesting 2 cores on the <cite>debug</cite> queue for 5 minutes. We are assuming that the only module needed to run LAMMPS is <code class="docutils literal notranslate"><span class="pre">atomistic/lammps/2017.08.11</span></code>
+cmd_restater can be executed using this command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmd_restart</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">p</span> <span class="n">runjob</span><span class="o">.</span><span class="n">pbs</span> <span class="o">-</span><span class="n">i</span> <span class="ow">in</span><span class="o">.</span><span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="n">steps</span><span class="o">.</span><span class="n">dat</span> <span class="o">-</span><span class="n">m</span> <span class="mi">10000000</span> <span class="o">-</span><span class="n">s</span> <span class="mi">30</span>
+</pre></div>
+</div>
+<p>The file <code class="docutils literal notranslate"><span class="pre">steps.dat</span></code> does not exist at the very begining, cmd_restarter just need a file that can be used to check how many iterations have been achieved in order to decide when the simulation is cosidered complete.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quick Start</a></li>
+<li><a class="reference internal" href="#tutorial">Tutorial</a><ul>
+<li><a class="reference internal" href="#lennard-jones-with-147-particles">Lennard-Jones with 147 particles</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/quickstart.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Guillermo Avendano-Franco.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/quickstart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

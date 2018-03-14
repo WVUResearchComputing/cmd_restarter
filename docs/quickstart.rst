@@ -1,5 +1,8 @@
+Quick Start and Tutorial
+========================
+
 Quick Start
-===========
+-----------
 
 To use cmd_restarter you need:
 
@@ -41,16 +44,12 @@ Once those changes are done, cmd_restarter can be executed as::
   cmd_restart.py -p <SUBMISSION_SCRIPT> -i <LAMMPS_INPUT> -d <DUMP_FILENAME> -m <MAX_ITERATIONS> -s <SLEEPING_TIME>
 
  
-Tutorial
-========
+Tutorial: Lennard-Jones with 147 particles
+------------------------------------------
 
 Using cmd_restarter is really simple. You just need to add a few comments on your LAMMPS script file, prepare a basic submission script and the script will take the responsability of submit and resubmit jobs until the number of iterations is achieved. 
 
 We will present now a simple example using 147 particles interacting under a Lennard-Jones potential.
-
-
-Lennard-Jones with 147 particles
---------------------------------
 
 For this exercise we will use cmd_restarter  to compute a simulation of 147 particles under a Lennard-Jones force field. 
 This number of particles is still too low for modern computers, we have constrained the conditions to force multiple executions as it will be case with much bigger problems.

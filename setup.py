@@ -25,7 +25,7 @@ INSTALL_REQUIRES = ['numpy >= 1.12.0']
 
 setup(
     name=NAME,
-    version='0.18.3.13',
+    version='0.18.3.14',
     author='Guillermo Avendano-Franco',
     author_email='gufranco@mail.wvu.edu',
     packages=find_packages(),

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -l nodes=1:ppn=16,walltime=00:15:00
+#PBS -l nodes=1:ppn=2,walltime=00:5:00
 #PBS -m aeb
 #PBS -q debug
 #PBS -j oe
@@ -9,4 +9,4 @@ module purge
 module load atomistic/lammps/2017.08.11
 
 cd $PBS_O_WORKDIR
-mpirun -np 16 -machinefile $PBS_NODEFILE lmp_mpi -in in.run
+mpirun -np 2 -machinefile $PBS_NODEFILE lmp_mpi -in in.run

@@ -128,4 +128,4 @@ if __name__ == '__main__':
 
             print('Submited job JobID: %s' % jobid)
             new_submit = False
-            time.sleep(60)
+            time.sleep(args.sleep)

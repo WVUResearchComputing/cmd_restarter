@@ -103,8 +103,8 @@ def analysis_block(rstblock, variables):
                 files.append((mtime, iline, argument))
             else:
                 files.append((0.0, iline, argument))
-                logging.error('File not found: %s' % argument)
-                break
+                logging.debug('File not found: %s' % argument)
+                continue
 
     # Check if there is not a single restart case
     to_uncomment = None
